@@ -28,8 +28,11 @@
           <p>
             <span class="font-weight-bold">{{ comment.author }} &middot;</span>
             {{ comment }}
-          </p>
+          </p>          
         {% endfor %}
+
+        <a href="{% url 'client_add_comment' pk=client.pk %}">Add Comment</a>
+        
       </div>
     </div>
     <br />

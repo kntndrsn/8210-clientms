@@ -3,7 +3,9 @@ from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.views.generic import ListView, DetailView
 from .models import models
 from .models import Client
+from .models import Comment
 from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
 
 class ClientListView(LoginRequiredMixin,ListView):
     model = Client
@@ -47,5 +49,18 @@ class ClientCreateView(LoginRequiredMixin,CreateView):
     login_url = 'login'
 
     def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class ClientAddCommentView(LoginRequiredMixin,CreateView):
+
+    model = Comment
+    template_name = 'comment_new.html'
+    fields = ('comment',)
+    login_url = 'login'
+    success_url = reverse_lazy('client_list')
+
+    def form_valid(self, form):
+        form.instance.client = get_object_or_404(Client, pk=self.kwargs['pk'])
         form.instance.author = self.request.user
         return super().form_valid(form)

@@ -44,3 +44,21 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return reverse('Client_list')
+
+class Vehicle(models.Model):
+    client = models.ForeignKey(
+        Client,
+        on_delete=models.CASCADE,
+        related_name='vehicles',
+    )
+    make = models.CharField(max_length=50, blank=False, null=True)
+    model = models.CharField(max_length=50, blank=False, null=True)
+    VIN = models.CharField(max_length=17, blank=True, unique=True, null=True)
+    purchaseDate = models.DateField()
+    lastServiceDate = models.DateField()
+
+    def __str__(self):
+        return self.VIN
+
+    def get_absolute_url(self):
+        return reverse('Client_list')
