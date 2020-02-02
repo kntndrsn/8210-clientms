@@ -8,6 +8,22 @@ from django.urls import reverse_lazy
 class ClientListView(LoginRequiredMixin,ListView):
     model = Client
     template_name = 'client_list.html'
+    
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        # Super users can see all clients
+        if self.request.user.is_superuser:
+
+            context['object_list'] = Client.objects.all()
+
+        else:
+            # Filtering the object list by the current user
+            context['object_list'] = Client.objects.filter(author = self.request.user)        
+
+        return context
+        
 
 class ClientDetailView(LoginRequiredMixin,DetailView):
     model = Client
