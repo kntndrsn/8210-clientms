@@ -8,30 +8,51 @@
 
     <div class="card">
       <div class="card-header">
-        <span class="font-weight-bold">{{ client.name }}</span>
-        <span class="font-weight-bold">cell: {{ client.cell_phone }} | </span>
-        <span class="font-weight-bold">acct: {{ client.acct_number }} | </span>
 
-        <span class="font-muted">addr: {{ client.address }} | </span>
-        <span class="font-muted">city: {{ client.city }} | </span>
-        <span class="font-muted">st: {{ client.state }} | </span>
-        <span class="font-muted">zip: {{ client.zipcode }} | </span>
-        <span class="font-muted">email: {{ client.email }} | </span>
+        <a href="{% url 'client_detail' client.pk %}">
+
+          <span class="font-weight-bold">{{ client.name }}</span>       
+        
+        </a>
+        
+        <br />
+        <span class="font-weight-bold">Cell: {{ client.cell_phone }} | </span>
+        <span class="font-weight-bold">Acct: {{ client.acct_number }} | </span>
+
+        <span class="font-muted">Addr: {{ client.address }} {{ client.city }} {{ client.state }} {{ client.zipcode }} | </span>
+
+        <span class="font-muted">Email: {{ client.email }}</span>
+        
       </div>
+
       <div class="card-body">
+
+        <span class="text-muted">Notes:</span>
+
         <p>{{ client.notes }}</p>
+
         <a href="{% url 'client_edit' client.pk %}">Edit</a> |
         <a href="{% url 'client_delete' client.pk %}">Delete</a>
+
       </div>
+
       <div class="card-footer">
+
+        <span class="text-muted">Comments:</span>
+
         {% for comment in client.comments.all %}
-          <p>
-            <span class="font-weight-bold">{{ comment.author }} &middot;</span>
-            {{ comment }}
-          </p>          
+
+        
+        <p>
+          <a href="{% url 'comment_edit' clientPk=client.pk pk=comment.pk %}">Edit</a> |
+          <a href="{% url 'comment_delete' clientPk=client.pk pk=comment.pk %}">Delete</a>
+
+          <span class="font-weight-bold">{{ comment.author }} &middot;</span>
+          {{ comment }}
+         </p>          
         {% endfor %}
 
-        <a href="{% url 'client_add_comment' pk=client.pk %}">Add Comment</a>
+        <a href="{% url 'add_comment' pk=client.pk %}">Add Comment</a>
         
       </div>
     </div>

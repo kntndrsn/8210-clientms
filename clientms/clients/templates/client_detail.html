@@ -10,10 +10,76 @@
 
     <p>{{ object.note }}</p>
 
-  </div>
+ </div>
 
   <p><a href="{% url 'client_edit' client.pk %}">Edit</a> | <a href="{% url 'client_delete' client.pk %}">Delete</a></p>
 
-  <p>Back to <a href="{% url 'client_list' %}">All Clients</a>.</p>
+<div>
+  <h3>Comments</h3>
+
+  {% for comment in client.comments.all %}
+
+  <p>
+  <a href="{% url 'comment_edit' clientPk=client.pk pk=comment.pk %}">Edit</a> |
+   <a href="{% url 'comment_delete' clientPk=client.pk pk=comment.pk %}">Delete</a>
+  <span class="font-weight-bold">{{ comment.author }} &middot;</span>
+  {{ comment }}
+  </p>          
+  
+  {% endfor %}
+
+  <a href="{% url 'add_comment' pk=client.pk %}">Add Comment</a>
+
+</div>
+
+<br />
+
+<div>
+  <h3>Vehicles</h3>
+
+  <div class="table-responsive">
+
+  <table class="table">
+
+    <tr>
+      <th></th>
+      <th></th>
+      <th>Make</th>
+      <th>Model</th>
+      <th>VIN</th>
+      <th>Date of Purchase</th>
+      <th>Date of last Service</th>
+    </tr>
+    
+
+  {% for vehicle in client.vehicles.all %}
+
+  <tr>
+    <td><a href="{% url 'vehicle_edit' clientPk=client.pk pk=vehicle.pk %}">Edit</a></td>
+    <td><a href="{% url 'vehicle_delete' clientPk=client.pk pk=vehicle.pk %}">Delete</a></td>
+    <td>{{ vehicle.make }}</td>
+    <td>{{ vehicle.model }}</td>
+    <td>{{ vehicle.VIN }}</td>
+    <td>{{ vehicle.purchaseDate }}</td>
+    <td>{{ vehicle.lastServiceDate }}</td>
+  </tr>
+
+  {% endfor %} 
+
+  </table>
+
+  </div>
+  
+  <a href="{% url 'add_vehicle' pk=client.pk %}">Add Vehicle</a>
+
+</div>
+
+<br />
+
+<p>Back to <a href="{% url 'client_list' %}">All Clients</a>.</p>
+
   
 {% endblock content %}
+
+
+

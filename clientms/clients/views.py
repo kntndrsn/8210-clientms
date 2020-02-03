@@ -4,8 +4,10 @@ from django.views.generic import ListView, DetailView
 from .models import models
 from .models import Client
 from .models import Comment
-from django.urls import reverse_lazy
+from .models import Vehicle
+from django.urls import reverse_lazy, reverse, resolve
 from django.shortcuts import get_object_or_404
+from django import forms
 
 class ClientListView(LoginRequiredMixin,ListView):
     model = Client
@@ -52,15 +54,89 @@ class ClientCreateView(LoginRequiredMixin,CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
-class ClientAddCommentView(LoginRequiredMixin,CreateView):
+class CommentCreateView(LoginRequiredMixin,CreateView):
 
     model = Comment
     template_name = 'comment_new.html'
     fields = ('comment',)
     login_url = 'login'
-    success_url = reverse_lazy('client_list')
 
     def form_valid(self, form):
         form.instance.client = get_object_or_404(Client, pk=self.kwargs['pk'])
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+
+        return reverse('client_detail', args=(self.kwargs['pk'],))
+            
+            
+
+class CommentUpdateView(LoginRequiredMixin,UpdateView):
+    model = Comment
+    fields = ('comment',)
+    template_name = 'comment_edit.html'
+    
+    def get_success_url(self):
+
+        return reverse('client_detail', args=(self.kwargs['clientPk'],))
+
+
+class CommentDeleteView(LoginRequiredMixin,DeleteView):
+    model = Comment
+    template_name = 'comment_delete.html'
+    
+    def get_success_url(self):
+
+        return reverse('client_detail', args=(self.kwargs['clientPk'],))
+
+class VehicleCreateView(LoginRequiredMixin,CreateView):
+
+    model = Vehicle
+    template_name = 'vehicle_new.html'
+    fields = ('make', 'model', 'VIN', 'purchaseDate', 'lastServiceDate',)
+    login_url = 'login'
+
+    def get_form(self, form_class=None):
+
+        form = super(VehicleCreateView, self).get_form(form_class)
+
+        form.fields['purchaseDate'].label = "Date of Purchase"
+        form.fields['lastServiceDate'].label = "Date of Last Service"
+
+        return form
+
+    def get_success_url(self):
+        return reverse('client_detail', args=(self.kwargs['pk'],))
+
+    def form_valid(self, form):
+        form.instance.client = get_object_or_404(Client, pk=self.kwargs['pk'])
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class VehicleUpdateView(LoginRequiredMixin,UpdateView):
+    
+    model = Vehicle
+    fields = ('make', 'model', 'VIN', 'purchaseDate', 'lastServiceDate',)
+    template_name = 'vehicle_edit.html'
+
+    def get_success_url(self):
+        return reverse('client_detail', args=(self.kwargs['clientPk'],))
+
+    def get_form(self, form_class=None):
+
+        form = super(VehicleUpdateView, self).get_form(form_class)
+
+        form.fields['purchaseDate'].label = "Date of Purchase"
+        form.fields['lastServiceDate'].label = "Date of Last Service"
+
+        return form
+    
+
+
+class VehicleDeleteView(LoginRequiredMixin,DeleteView):
+    model = Vehicle
+    template_name = 'vehicle_delete.html'
+
+    def get_success_url(self):
+        return reverse('client_detail', args=(self.kwargs['clientPk'],))

@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
-
 class Client(models.Model):
 
     name = models.CharField(max_length=50,blank=False, null=False, default=' ')
@@ -51,14 +50,23 @@ class Vehicle(models.Model):
         on_delete=models.CASCADE,
         related_name='vehicles',
     )
-    make = models.CharField(max_length=50, blank=False, null=True)
-    model = models.CharField(max_length=50, blank=False, null=True)
+    make = models.CharField(max_length=50, blank=False, null=False)
+
+    model = models.CharField(max_length=50, blank=False, null=False)
+
     VIN = models.CharField(max_length=17, blank=True, unique=True, null=True)
-    purchaseDate = models.DateField()
-    lastServiceDate = models.DateField()
+
+    purchaseDate = models.DateField(blank=True, null=True)
+
+    lastServiceDate = models.DateField(blank=True, null=True)
+
+    author = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+    )
 
     def __str__(self):
-        return self.VIN
+        return self.make + " " + self.model
 
     def get_absolute_url(self):
-        return reverse('Client_list')
+        return reverse('client_list')
